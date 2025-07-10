@@ -2,17 +2,16 @@ from pathlib import Path
 
 import pytorch_lightning as pl
 
-from baseline_model import BaselineModel
+from models.base.baseline_model import BaselineModel
 from config import hparams
-from linear_model import LinearModel
-from byol_model import BYOLModel
-from semi_sup_model import SemiSupModel
-from byolhp_model import BYOLHPModel
-from simclr_model import SimCLRModel
-from simclrhp_model import SimCLRHPModel
-from vicreg_model import VICRegModel
-from vicreghp_model import VICRegHPModel
-from ascii_progress_bar import ASCIIProgressBar
+from models.base.linear_model import LinearModel
+from models.architectures.byol_model import BYOLModel
+from models.base.semi_sup_model import SemiSupModel
+from models.architectures.byolhp_model import BYOLHPModel
+from models.architectures.simclr_model import SimCLRModel
+from models.architectures.simclrhp_model import SimCLRHPModel
+from models.architectures.vicreg_model import VICRegModel
+from models.architectures.vicreghp_model import VICRegHPModel
 
 
 def run():
@@ -93,7 +92,7 @@ def run():
                          default_root_dir=hparams.default_root_dir.joinpath(hparams.mode),
                          deterministic=hparams.deterministic,
                          benchmark=hparams.benchmark,
-                         callbacks=[lr_callback, ASCIIProgressBar()])
+                         callbacks=[lr_callback])
     # Run the model.
     model.trainer = trainer
     trainer.fit(model)
