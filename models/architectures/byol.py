@@ -4,8 +4,9 @@ from functools import partial
 import pytorch_lightning as pl
 import torch
 
-from training.loss import mse_loss
+from training.byol import compute_mse
 from utilities import utils
+from view_perm.permute_views import PermuteViews
 
 
 class BYOLModel(pl.LightningModule):
@@ -43,6 +44,13 @@ class BYOLModel(pl.LightningModule):
         for param in self.target_projector.parameters():
             param.requires_grad = False
 
+        # TODO Find better way to do this
+        if self.hparams.use_histoperm:
+            self.view_perm = PermuteViews(shuffle_percentage=self.hparams.shuffle_percentage,
+                                          num_classes=self.hparams.num_classes,
+                                          view_1_data_transform=self.view_1_data_transform,
+                                          view_2_data_transform=self.view_2_data_transform)
+
     def _get_embeddings(self, x_1, x_2):
         """
         Input:
@@ -68,16 +76,20 @@ class BYOLModel(pl.LightningModule):
         return self.online_encoder(x)
 
     def training_step(self, batch, batch_idx, *args, **kwargs):
-        x, __ = batch  # batch is a tuple, we just want the image
+        x, y = batch  # batch is a tuple, we just want the image
 
-        with torch.no_grad():
-            x_1 = self.view_1_data_transform(x.detach().clone())
-            x_2 = self.view_2_data_transform(x.detach().clone())
+        # TODO Do this in a better way so the conditional isn't re-evaluated at every step
+        if self.hparams.use_histoperm:
+            x_1, x_2 = self.view_perm.permute_batch(x, y)
+        else:
+            with torch.no_grad():
+                x_1 = self.view_1_data_transform(x.detach().clone())
+                x_2 = self.view_2_data_transform(x.detach().clone())
 
         emb_q, q, k = self._get_embeddings(x_1, x_2)
         emb_q2, q2, k2 = self._get_embeddings(x_2, x_1)
 
-        loss = (mse_loss(q, k) + mse_loss(q2, k2)).mean()
+        loss = (compute_mse(q, k) + compute_mse(q2, k2)).mean()
 
         self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
 
