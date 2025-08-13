@@ -1,6 +1,8 @@
 # HistoPerm
 Official code for the paper [HistoPerm: A permutation-based view augmentation approach for improving histopathologic feature representation learning](https://doi.org/10.1016/j.jpi.2023.100320) appearing in the Elsevier Journal of Pathology Informatics.
 
+![alt text](figures/figure.png)
+
 # Requirements
 + [kornia](https://www.kornia.org/)
 + [pytorch-lightning](https://lightning.ai/docs/pytorch/stable/)

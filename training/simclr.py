@@ -4,15 +4,15 @@ import torch
 
 
 def info_nce_loss(features: torch.Tensor, batch_size: int) -> Tuple[torch.Tensor, torch.Tensor]:
-    # TODO docs
     """
+    Compute the InfoNCE loss on the given features.
 
     Args:
-        features:
-        batch_size:
+        features: Features to compute loss on
+        batch_size: Mini-batch size of the features.
 
     Returns:
-
+        InfoNCE loss on the given features.
     """
     labels = torch.cat([torch.arange(batch_size) for __ in range(2)], dim=0)
     labels = (labels.unsqueeze(0) == labels.unsqueeze(1)).float()

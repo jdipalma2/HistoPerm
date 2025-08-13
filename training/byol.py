@@ -3,7 +3,7 @@ import torch
 
 def compute_mse(a: torch.Tensor, b: torch.Tensor) -> torch.Tensor:
     """
-    Compute the mean-squared error
+    Compute the mean-squared error between inputs.
 
     Args:
         a: input tensor 1

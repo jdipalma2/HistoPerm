@@ -2,16 +2,16 @@ import torch
 
 
 def variance_loss(x_1: torch.Tensor, x_2: torch.Tensor, mach_eps: float) -> torch.Tensor:
-    # TODO docs
     """
+    Compute the variance portion of the VICReg loss function.
 
     Args:
-        x_1:
-        x_2:
-        mach_eps:
+        x_1: Input 1
+        x_2: Input 2
+        mach_eps: Machine epsilon
 
     Returns:
-
+        Variance loss between x_1 and x_2.
     """
     x_1 = x_1 - x_1.mean(dim=0)
     x_2 = x_2 - x_2.mean(dim=0)
@@ -21,17 +21,17 @@ def variance_loss(x_1: torch.Tensor, x_2: torch.Tensor, mach_eps: float) -> torc
 
 
 def covariance_loss(x_1: torch.Tensor, x_2: torch.Tensor, num_features: int, len_x: int) -> torch.Tensor:
-    # TODO docs
     """
+    Compute the co-variance portion of the VICReg loss function.
 
     Args:
-        x_1:
-        x_2:
-        num_features:
-        len_x:
+        x_1: Input 1
+        x_2: Input 2
+        num_features: Number of features in the inputs
+        len_x: Length of the inputs
 
     Returns:
-
+        Co-variance loss between x_1 and x_2.
     """
     cov_x_1 = (x_1.T @ x_1) / (len_x - 1)
     cov_x_2 = (x_2.T @ x_2) / (len_x - 1)
@@ -39,14 +39,14 @@ def covariance_loss(x_1: torch.Tensor, x_2: torch.Tensor, num_features: int, len
 
 
 def off_diagonal(x: torch.Tensor) -> torch.Tensor:
-    # TODO docs
     """
+    Find the off-diagonal elements of x for use in the co-variance loss function.
 
     Args:
-        x:
+        x: Input
 
     Returns:
-
+        Flattened tensor of off-diagonal elements of x.
     """
     # Source:
     # https://github.com/facebookresearch/vicreg/blob/a73f567660ae507b0667c68f685945ae6e2f62c3/main_vicreg.py#L239
